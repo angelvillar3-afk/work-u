@@ -31,7 +31,7 @@
             min-height: 100vh;
         }
 
-        /* BARRA DE NAVEGACIÓN */
+        /* BARRA DE NAVEGACIÓN RESPONSIVA */
         nav {
             background: white;
             padding: 15px 8%;
@@ -48,6 +48,17 @@
         .logo-container .logo-img {
             height: 45px;
             display: block;
+        }
+
+        /* Botón de Hamburguesa oculto por defecto en PC */
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--dark-blue);
+            cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
         }
 
         .nav-links {
@@ -165,7 +176,7 @@
 
         .hero-right-container { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 
-        /* CELULAR FLOTANTE LIMPIO CON NUEVO LOGO INTEGRADO */
+        /* MOCKUP DEL CELULAR FLOTANTE */
         .phone-frame {
             background: #040d1a;
             border: 8px solid #1e293b;
@@ -433,7 +444,6 @@
         }
         .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
         .footer-left { display: flex; align-items: center; gap: 20px; }
-        
         .footer-logo { height: 32px; display: block; }
         
         .footer-links { display: flex; gap: 20px; }
@@ -443,13 +453,45 @@
         .footer-socials a { color: #94a3b8; transition: 0.3s;}
         .footer-socials a:hover { color: white; }
 
-        /* INTERFAZ RESPONSIVE MEJORADA PARA DISPOSITIVOS MÓVILES (NO PIERDE OPCIONES) */
+        /* INTERFAZ RESPONSIVE MEJORADA CON MENÚ DE HAMBURGUESA INTERACTIVO */
         @media (max-width: 992px) {
-            nav { padding: 15px 4%; flex-direction: column; gap: 15px; text-align: center; }
-            .nav-links { flex-wrap: wrap; justify-content: center; gap: 15px; }
-            .nav-buttons { width: 100%; justify-content: center; }
+            nav { padding: 15px 6%; position: relative; }
             
-            header { grid-template-columns: 1fr; text-align: center; padding: 40px 4% 80px 4%; }
+            /* Habilitar botón de hamburguesa en móvil */
+            .menu-toggle {
+                display: block;
+            }
+
+            /* Transformación del contenedor de enlaces en un panel desplegable vertical */
+            .nav-links {
+                display: none; /* Oculto por defecto */
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+                padding: 20px 8%;
+                gap: 15px;
+                border-top: 1px solid #edf2f7;
+                z-index: 999;
+            }
+
+            /* Clase activa que inyectará JS para abrir/cerrar el panel */
+            .nav-links.mobile-open {
+                display: flex;
+                animation: slideDown 0.3s ease-in-out;
+            }
+
+            @keyframes slideDown {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .nav-buttons { display: none; } /* Oculta botones de sesión secundarios en móvil para optimizar espacio */
+            
+            header { grid-template-columns: 1fr; text-align: center; padding: 40px 6% 80px 6%; }
             .hero-text h1 { font-size: 2rem; }
             .hero-action-btns { justify-content: center; flex-direction: column; gap: 10px; }
             .hero-right-container { flex-direction: column; gap: 30px; margin-top: 20px; }
@@ -464,8 +506,8 @@
             .vacancies-grid { grid-template-columns: 1fr; gap: 20px; }
             .companies-layout, .students-benefits-grid, .resources-layout, .about-grid-layout { grid-template-columns: 1fr; gap: 30px; }
             
-            section { padding: 40px 4%; }
-            footer { padding: 30px 4%; text-align: center; }
+            section { padding: 40px 6%; }
+            footer { padding: 30px 6%; text-align: center; }
             .footer-content { flex-direction: column; gap: 20px; }
             .footer-left { flex-direction: column; gap: 10px; }
         }
@@ -477,7 +519,12 @@
         <div class="logo-container">
             <img src="Gemini_Generated_Image_h54f9vh54f9vh54f.png" alt="WorkU Logo" class="logo-img">
         </div>
-        <ul class="nav-links">
+        
+        <button class="menu-toggle" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-bars" id="menu-icon"></i>
+        </button>
+
+        <ul class="nav-links" id="nav-menu-list">
             <li><a onclick="switchView('inicio')" id="link-inicio" class="active">Inicio</a></li>
             <li><a onclick="switchView('vacantes')" id="link-vacantes">Vacantes</a></li>
             <li><a onclick="switchView('empresas')" id="link-empresas">Empresas</a></li>
@@ -801,6 +848,23 @@
             '¿Cómo validan que los candidatos sean estudiantes activos?': 'Conectamos de forma directa con los módulos escolares de las instituciones aliadas. Cada estudiante debe cargar su constancia vigente de créditos y estatus activo para poder aplicar a cualquier vacante.'
         };
 
+        // Lógica de apertura y cierre del menú hamburguesa móvil
+        function toggleMobileMenu() {
+            const menu = document.getElementById('nav-menu-list');
+            const icon = document.getElementById('menu-icon');
+            
+            menu.classList.toggle('mobile-open');
+            
+            // Alternar ícono entre barras (☰) y una equis (✕)
+            if (menu.classList.contains('mobile-open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        }
+
         function renderVacancies(list) {
             const container = document.getElementById('container-vacantes');
             container.innerHTML = '';
@@ -840,6 +904,16 @@
             document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
             const activeLink = document.getElementById(`link-${viewId}`);
             if(activeLink) activeLink.classList.add('active');
+            
+            // Cerrar menú móvil automáticamente tras seleccionar una sección
+            const menu = document.getElementById('nav-menu-list');
+            const icon = document.getElementById('menu-icon');
+            if (menu.classList.contains('mobile-open')) {
+                menu.classList.remove('mobile-open');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+
             window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
