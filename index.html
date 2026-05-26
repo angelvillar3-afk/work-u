@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkU - Conectamos tu talento</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-blue: #002350;
+            --main-blue: #004b93;
+            --bright-green: #76c720;
+            --hover-green: #61aa14;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: white;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* BARRA DE NAVEGACIÓN */
+        nav {
+            background: white;
+            padding: 15px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .logo-container .logo-img {
+            height: 45px;
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--main-blue);
+            font-weight: 600;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-login {
+            border: 1px solid #cbd5e1;
+            padding: 8px 20px;
+            border-radius: 6px;
+            color: var(--main-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-login:hover { background-color: #f1f5f9; }
+
+        .btn-register {
+            background-color: var(--bright-green);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-register:hover { background-color: var(--hover-green); }
+
+        /* CONTROL DE VISTAS (SPA EFFECT) */
+        .spa-section {
+            display: none;
+            flex: 1;
+        }
+
+        .spa-section.active-view {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HERO SECCIÓN */
+        header {
+            background: linear-gradient(135deg, #002147 0%, #001029 100%);
+            color: white;
+            padding: 60px 8% 120px 8%;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 40px;
+            align-items: center;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+        }
+
+        .hero-text h3 {
+            color: var(--bright-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        .hero-text h1 {
+            font-size: 2.8rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero-text h1 span { color: var(--bright-green); }
+        .hero-text p { color: #94a3b8; font-size: 1rem; margin-bottom: 35px; line-height: 1.6; }
+        .hero-action-btns { display: flex; gap: 15px; }
+
+        .btn-view-trigger {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .btn-view-trigger.student { background-color: var(--bright-green); color: white; }
+        .btn-view-trigger.company { background-color: transparent; border: 1px solid white; color: white; }
+        .btn-view-trigger.student:hover { background-color: var(--hover-green); }
+        .btn-view-trigger.company:hover { background-color: rgba(255,255,255,0.1); }
+
+        .hero-right-container { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+
+        /* CELULAR FLOTANTE LIMPIO CON NUEVO LOGO INTEGRADO */
+        .phone-frame {
+            background: #040d1a;
+            border: 8px solid #1e293b;
+            border-radius: 36px;
+            padding: 25px 20px;
+            width: 230px;
+            height: 440px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .phone-frame .phone-logo {
+            width: 85%;
+            display: block;
+            margin-bottom: 35px;
+        }
+
+        .phone-frame small { color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; line-height: 1.4; margin-top: 30px; }
+        .phone-frame small span { color: var(--bright-green); font-weight: bold; }
+
+        .hero-features { display: flex; flex-direction: column; gap: 20px; flex: 1; }
+        .h-feature { display: flex; align-items: center; gap: 15px; font-size: 0.8rem; color: #cbd5e1; }
+        .h-feature i {
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px;
+            border-radius: 50%;
+            color: var(--bright-green);
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .h-feature strong { color: white; display: block; font-size: 0.85rem; margin-bottom: 2px; }
+
+        /* CONTADORES */
+        .stats-container {
+            background: white;
+            max-width: 84%;
+            margin: -45px auto 0 auto;
+            border-radius: 15px;
+            padding: 25px 15px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 10;
+            border: 1px solid #edf2f7;
+        }
+
+        .stat-item { display: flex; align-items: center; gap: 15px; justify-content: center; border-right: 1px solid #e2e8f0; }
+        .stat-item:last-child { border-right: none; }
+        .stat-item i { font-size: 1.8rem; color: var(--main-blue); }
+        .stat-info h4 { font-size: 1.4rem; color: var(--dark-blue); font-weight: 700; }
+        .stat-info p { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* SECCIONES ESTÁNDAR */
+        section { padding: 60px 8%; }
+        .section-header { text-align: center; margin-bottom: 40px; }
+        .section-header h2 { font-size: 2rem; color: var(--dark-blue); font-weight: 700; }
+        .section-header h2 span { color: var(--bright-green); }
+        .section-header p { color: var(--text-muted); font-size: 0.95rem; margin-top: 8px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        /* ¿CÓMO FUNCIONA? */
+        .process-flow { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .process-step { text-align: center; flex: 1; position: relative; }
+        .process-step:not(:last-child)::after {
+            content: '........................';
+            letter-spacing: 2px;
+            position: absolute;
+            top: 25px;
+            right: -30%;
+            color: #cbd5e1;
+            font-size: 1.2rem;
+            width: 50%;
+            z-index: 1;
+        }
+
+        .step-icon-wrapper { position: relative; display: inline-block; margin-bottom: 15px; z-index: 2; }
+        .step-number { position: absolute; bottom: 0; left: 0; background: var(--main-blue); color: white; width: 20px; height: 20px; border-radius: 50%; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .step-icon-wrapper i { font-size: 1.3rem; color: var(--main-blue); background: white; padding: 16px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; width: 52px; height: 52px; display: inline-flex; align-items: center; justify-content: center; }
+        .process-step h4 { font-size: 0.9rem; margin-bottom: 6px; color: var(--dark-blue); font-weight: 700; }
+        .process-step p { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; padding: 0 8px; }
+
+        /* FILTROS Y CONTENEDORES DE VACANTES */
+        .vacancies-filter { display: flex; justify-content: center; gap: 12px; margin-bottom: 35px; flex-wrap: wrap; }
+        .filter-badge { padding: 10px 22px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 25px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.3s; color: var(--text-dark); }
+        .filter-badge.active, .filter-badge:hover { background: var(--main-blue); color: white; border-color: var(--main-blue); }
+
+        .vacancies-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+        
+        .vacancy-card-large {
+            background: white;
+            border: 1px solid #edf2f7;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.01);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: 0.3s;
+        }
+        .vacancy-card-large:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.05); border-color: #cbd5e1; }
+        .v-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .v-card-title h3 { font-size: 1.15rem; color: var(--dark-blue); margin-bottom: 4px; font-weight: 700; }
+        .v-card-title p { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        
+        .v-company-logo { width: 45px; height: 45px; background: #eff6ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--main-blue); }
+        .v-card-tags { margin-bottom: 20px; display: flex; gap: 6px; flex-wrap: wrap; }
+        
+        .tag { background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); }
+        .tag.remote { background: #ecfdf5; color: #047857; }
+        .tag.tech { background: #f0fdf4; color: #15803d; }
+        .tag.marketing { background: #fff7ed; color: #c2410c; }
+        .tag.admin { background: #f5f3ff; color: #6d28d9; }
+
+        .v-card-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 15px; }
+        .v-card-meta span { display: block; font-size: 0.75rem; color: var(--text-muted); }
+        .v-card-meta strong { font-size: 1.05rem; color: var(--dark-blue); }
+        
+        .btn-apply { background: var(--main-blue); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; transition: 0.3s; cursor: pointer; }
+        .btn-apply:hover { background: var(--dark-blue); }
+
+        /* MODAL DE DETALLE DE TRABAJO REAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 35, 80, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: 0.3s ease;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+        
+        .modal-box {
+            background: white;
+            width: 90%;
+            max-width: 680px;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        .modal-overlay.open .modal-box { transform: scale(1); }
+        
+        .close-modal { position: absolute; top: 25px; right: 25px; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; transition: 0.3s; }
+        .close-modal:hover { color: var(--text-dark); }
+        
+        .modal-header-info h2 { color: var(--dark-blue); font-size: 1.5rem; margin-bottom: 5px; }
+        .modal-header-info p { color: var(--main-blue); font-weight: 600; font-size: 0.95rem; margin-bottom: 15px; }
+        
+        .modal-meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; background: var(--bg-light); padding: 15px; border-radius: 12px; margin-bottom: 25px; }
+        .meta-entry span { display: block; font-size: 0.75rem; color: var(--text-muted); }
+        .meta-entry strong { font-size: 0.9rem; color: var(--dark-blue); }
+        
+        .modal-body h4 { color: var(--dark-blue); margin: 20px 0 8px 0; font-size: 1rem; }
+        .modal-body ul { padding-left: 20px; color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; }
+        .modal-body p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; }
+        
+        .modal-form { border-top: 1px solid #e2e8f0; margin-top: 30px; padding-top: 25px; }
+        .modal-form h3 { color: var(--dark-blue); font-size: 1.1rem; margin-bottom: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-dark); margin-bottom: 5px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; }
+        .btn-submit-app { width: 100%; background: var(--bright-green); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.9rem; margin-top: 10px; transition: 0.3s; }
+        .btn-submit-app:hover { background: var(--hover-green); }
+
+        /* SECCIÓN EMPRESAS */
+        .companies-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .companies-features { display: flex; flex-direction: column; gap: 20px; }
+        .c-feature-item { display: flex; gap: 15px; }
+        .c-feature-item i { font-size: 1.2rem; color: var(--bright-green); background: #ecf7ec; padding: 12px; border-radius: 10px; height: fit-content; }
+        .c-feature-item h4 { font-size: 1rem; color: var(--dark-blue); margin-bottom: 5px; }
+        .c-feature-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+        .companies-cta-card { background: linear-gradient(135deg, var(--dark-blue) 0%, #003366 100%); color: white; padding: 40px; border-radius: 20px; box-shadow: 0 15px 30px rgba(0,35,80,0.15); }
+        .companies-cta-card h3 { font-size: 1.5rem; margin-bottom: 15px; }
+        .companies-cta-card p { color: #94a3b8; font-size: 0.9rem; margin-bottom: 25px; line-height: 1.6; }
+        .companies-cta-card ul { list-style: none; margin-bottom: 30px; }
+        .companies-cta-card ul li { font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; color: #cbd5e1; }
+        .companies-cta-card ul li i { color: var(--bright-green); }
+
+        /* SECCIÓN ESTUDIANTES */
+        .students-benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        .student-b-card { background: white; border: 1px solid #edf2f7; padding: 30px 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
+        .student-b-card i { font-size: 2rem; color: var(--main-blue); margin-bottom: 15px; }
+        .student-b-card h4 { font-size: 1.1rem; color: var(--dark-blue); margin-bottom: 10px; }
+        .student-b-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+        /* SECCIÓN RECURSOS */
+        .resources-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .blog-cards { display: flex; flex-direction: column; gap: 20px; }
+        .blog-card-horizontal { background: white; border-radius: 12px; border: 1px solid #edf2f7; display: flex; overflow: hidden; }
+        .blog-img-placeholder { width: 35%; background: #cbd5e1; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
+        .blog-info { padding: 15px; width: 65%; }
+        .blog-info span { font-size: 0.7rem; font-weight: 700; color: var(--main-blue); text-transform: uppercase; }
+        .blog-info h4 { font-size: 0.95rem; color: var(--dark-blue); margin: 5px 0; }
+        .blog-info p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+        
+        .faq-accordion { display: flex; flex-direction: column; gap: 15px; }
+        .faq-item { background: white; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+        .faq-question { padding: 15px 20px; background: white; font-size: 0.9rem; font-weight: 600; color: var(--dark-blue); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .faq-answer { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; background: #fafafa; }
+        .faq-item.active .faq-answer { max-height: 160px; padding: 15px 20px; }
+
+        /* SECCIÓN SOBRE WORKU Y ASISTENTE IA */
+        .about-grid-layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: start; }
+        .about-story { line-height: 1.7; color: var(--text-muted); font-size: 0.95rem; margin-bottom: 35px; }
+        .timeline { position: relative; padding-left: 30px; }
+        .timeline::before { content: ''; position: absolute; left: 9px; top: 0; height: 100%; width: 2px; background: #cbd5e1; }
+        .timeline-item { position: relative; margin-bottom: 30px; }
+        .timeline-item::before { content: ''; position: absolute; left: -25px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--bright-green); border: 2px solid white; box-shadow: 0 0 0 3px var(--bright-green); }
+        .timeline-item h4 { font-size: 1rem; color: var(--dark-blue); margin-bottom: 4px; }
+        .timeline-item h4 span { color: var(--main-blue); font-weight: 700; margin-right: 10px; }
+        .timeline-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+        .ai-assistant-wrapper { background: white; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.03); overflow: hidden; display: flex; flex-direction: column; height: 480px; }
+        .ai-assistant-header { background: var(--dark-blue); color: white; padding: 15px 20px; display: flex; align-items: center; gap: 12px; }
+        .ai-avatar { width: 35px; height: 35px; background: var(--bright-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .ai-status h4 { font-size: 0.9rem; font-weight: 600; }
+        .ai-status span { font-size: 0.7rem; color: var(--bright-green); display: flex; align-items: center; gap: 4px; }
+        .ai-status span::before { content: ''; width: 6px; height: 6px; background: var(--bright-green); border-radius: 50%; display: inline-block; }
+
+        .ai-chat-body { flex: 1; padding: 20px; background: #f8fafc; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .chat-bubble { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 0.85rem; line-height: 1.4; }
+        .chat-bubble.received { background: white; color: var(--text-dark); align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #e2e8f0; }
+        .chat-bubble.sent { background: var(--main-blue); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+        .typing-bubble { display: none; align-self: flex-start; background: white; border: 1px solid #e2e8f0; padding: 12px 20px; border-radius: 12px; border-bottom-left-radius: 2px; }
+        .typing-dots { display: flex; gap: 4px; align-items: center; height: 10px; }
+        .typing-dots span { width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: blink 1.4s infinite both; }
+        .typing-dots span:nth-child(2) { animation-delay: .2s; }
+        .typing-dots span:nth-child(3) { animation-delay: .4s; }
+
+        @keyframes blink {
+            0% { opacity: .2; transform: scale(0.8); }
+            20% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: .2; transform: scale(0.8); }
+        }
+
+        .ai-menu-options { padding: 15px; background: white; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; }
+        .ai-option-btn { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; text-align: left; color: var(--main-blue); font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .ai-option-btn:hover { background: var(--main-blue); color: white; border-color: var(--main-blue); }
+
+        /* FOOTER */
+        footer {
+            background: #001533;
+            color: #94a3b8;
+            padding: 40px 8%;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.8rem;
+            margin-top: auto;
+        }
+        .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .footer-left { display: flex; align-items: center; gap: 20px; }
+        
+        .footer-logo { height: 32px; display: block; }
+        
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { color: #94a3b8; text-decoration: none; transition: 0.3s;}
+        .footer-links a:hover { color: white; }
+        .footer-socials { display: flex; gap: 15px; font-size: 1.1rem; }
+        .footer-socials a { color: #94a3b8; transition: 0.3s;}
+        .footer-socials a:hover { color: white; }
+
+        /* INTERFAZ RESPONSIVE MEJORADA PARA DISPOSITIVOS MÓVILES (NO PIERDE OPCIONES) */
+        @media (max-width: 992px) {
+            nav { padding: 15px 4%; flex-direction: column; gap: 15px; text-align: center; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .nav-buttons { width: 100%; justify-content: center; }
+            
+            header { grid-template-columns: 1fr; text-align: center; padding: 40px 4% 80px 4%; }
+            .hero-text h1 { font-size: 2rem; }
+            .hero-action-btns { justify-content: center; flex-direction: column; gap: 10px; }
+            .hero-right-container { flex-direction: column; gap: 30px; margin-top: 20px; }
+            .phone-frame { width: 100%; max-width: 280px; height: auto; padding: 30px 20px; }
+            
+            .stats-container { grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 92%; padding: 20px 10px; margin-top: -30px; }
+            .stat-item { border: none; }
+            
+            .process-flow { flex-direction: column; align-items: center; gap: 40px; }
+            .process-step:not(:last-child)::after { display: none; }
+            
+            .vacancies-grid { grid-template-columns: 1fr; gap: 20px; }
+            .companies-layout, .students-benefits-grid, .resources-layout, .about-grid-layout { grid-template-columns: 1fr; gap: 30px; }
+            
+            section { padding: 40px 4%; }
+            footer { padding: 30px 4%; text-align: center; }
+            .footer-content { flex-direction: column; gap: 20px; }
+            .footer-left { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo-container">
+            <img src="Gemini_Generated_Image_h54f9vh54f9vh54f.png" alt="WorkU Logo" class="logo-img">
+        </div>
+        <ul class="nav-links">
+            <li><a onclick="switchView('inicio')" id="link-inicio" class="active">Inicio</a></li>
+            <li><a onclick="switchView('vacantes')" id="link-vacantes">Vacantes</a></li>
+            <li><a onclick="switchView('empresas')" id="link-empresas">Empresas</a></li>
+            <li><a onclick="switchView('estudiantes')" id="link-estudiantes">Estudiantes</a></li>
+            <li><a onclick="switchView('recursos')" id="link-recursos">Recursos</a></li>
+            <li><a onclick="switchView('sobre-worku')" id="link-sobre-worku">Sobre WorkU</a></li>
+        </ul>
+        <div class="nav-buttons">
+            <a href="#" class="btn-login">Iniciar sesión</a>
+            <a href="#" class="btn-register">Regístrate</a>
+        </div>
+    </nav>
+
+    <div id="view-inicio" class="spa-section active-view">
+        <header>
+            <div class="hero-text">
+                <h3>TRABAJA. APRENDE. CRECE.</h3>
+                <h1>Conectamos tu talento con oportunidades que impulsan <span>tu futuro.</span></h1>
+                <p>WorkU es la plataforma líder que conecta a estudiantes universitarios con empresas que buscan talento flexible, comprometido y con un enorme potencial de desarrollo.</p>
+                <div class="hero-action-btns">
+                    <span onclick="switchView('estudiantes')" class="btn-view-trigger student"><i class="fa-solid fa-graduation-cap"></i> Soy estudiante</span>
+                    <span onclick="switchView('empresas')" class="btn-view-trigger company"><i class="fa-solid fa-briefcase"></i> Soy empresa</span>
+                </div>
+            </div>
+
+            <div class="hero-right-container">
+                <div class="phone-frame">
+                    <img src="Gemini_Generated_Image_h54f9vh54f9vh54f.png" alt="WorkU Logo Tarjeta" class="phone-logo">
+                    <small>Oportunidades<br>que se adaptan <span>a ti</span></small>
+                </div>
+                <div class="hero-features">
+                    <div class="h-feature">
+                        <i class="fa-regular fa-clock"></i> 
+                        <div><strong>FLEXIBILIDAD</strong>Horarios que se adaptan a tu vida universitaria.</div>
+                    </div>
+                    <div class="h-feature">
+                        <i class="fa-solid fa-briefcase"></i> 
+                        <div><strong>EXPERIENCIA REAL</strong>Gana experiencia en tu área de estudio.</div>
+                    </div>
+                    <div class="h-feature">
+                        <i class="fa-solid fa-file-signature"></i> 
+                        <div><strong>CERTIFICACIÓN</strong>Obtén reconocimientos que fortalecen tu CV.</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="stats-container">
+            <div class="stat-item">
+                <i class="fa-solid fa-user-graduate"></i>
+                <div class="stat-info"><h4>+12,500</h4><p>Estudiantes activos</p></div>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-building"></i>
+                <div class="stat-info"><h4>+850</h4><p>Empresas asociadas</p></div>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-briefcase"></i>
+                <div class="stat-info"><h4>+2,300</h4><p>Oportunidades</p></div>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-award"></i>
+                <div class="stat-info"><h4>+5,800</h4><p>Certificaciones</p></div>
+            </div>
+        </div>
+
+        <section>
+            <div class="section-header">
+                <h2>¿Cómo funciona <span>WorkU</span>?</h2>
+                <p>Un ecosistema simple, transparente y automatizado para tu inserción laboral rápida.</p>
+            </div>
+            <div class="process-flow">
+                <div class="process-step">
+                    <div class="step-icon-wrapper"><span class="step-number">1</span><i class="fa-regular fa-user"></i></div>
+                    <h4>Crea tu perfil</h4>
+                    <p>Sube tu historial y disponibilidad horaria exacta.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-icon-wrapper"><span class="step-number">2</span><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h4>Aplica</h4>
+                    <p>Postula a vacantes validadas con un solo clic.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-icon-wrapper"><span class="step-number">3</span><i class="fa-solid fa-briefcase"></i></div>
+                    <h4>Trabaja</h4>
+                    <p>Colabora en proyectos reales que impulsan tu carrera.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="view-vacantes" class="spa-section">
+        <section class="bg-alternate">
+            <div class="section-header">
+                <h2>Bolsa de Trabajo <span>Universitaria</span></h2>
+                <p>Encuentra proyectos reales con horarios garantizados que cuidan tus estudios.</p>
+            </div>
+
+            <div class="vacancies-filter">
+                <span class="filter-badge active" onclick="filterVacancies('all', this)">Todas</span>
+                <span class="filter-badge" onclick="filterVacancies('tech', this)">Tecnología</span>
+                <span class="filter-badge" onclick="filterVacancies('marketing', this)">Marketing</span>
+                <span class="filter-badge" onclick="filterVacancies('admin', this)">Administración</span>
+            </div>
+
+            <div class="vacancies-grid" id="container-vacantes">
+                </div>
+        </section>
+    </div>
+
+    <div id="view-empresas" class="spa-section">
+        <section>
+            <div class="section-header">
+                <h2>Estrategia de Talento para <span>Empresas</span></h2>
+                <p>Suma la innovación y el empuje de la comunidad universitaria a tus objetivos corporativos.</p>
+            </div>
+            <div class="companies-layout">
+                <div class="companies-features">
+                    <div class="c-feature-item">
+                        <i class="fa-solid fa-bolt"></i>
+                        <div>
+                            <h4>Filtros Universitarios Avanzados</h4>
+                            <p>Accede de forma directa a perfiles segmentados por escuela, promedio y créditos académicos aprobados.</p>
+                        </div>
+                    </div>
+                    <div class="c-feature-item">
+                        <i class="fa-solid fa-handshake-angle"></i>
+                        <div>
+                            <h4>Legalidad y Convenios</h4>
+                            <p>Nos encargamos del marco legal garantizando que las vacantes cumplan las normativas universitarias locales.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="companies-cta-card">
+                    <h3>¿Listo para contratar con WorkU?</h3>
+                    <p>Únete hoy a las más de 850 compañías que confían en el talento joven.</p>
+                    <button class="btn-submit-app">Registrar mi Empresa</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="view-estudiantes" class="spa-section">
+        <section class="bg-alternate">
+            <div class="section-header">
+                <h2>El impulso que tu <span>Carrera Necesita</span></h2>
+                <p>Obtén experiencia profesional de valor curricular sin comprometer tus clases o calificaciones.</p>
+            </div>
+            <div class="students-benefits-grid">
+                <div class="student-b-card">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <h4>Horarios Flexibles</h4>
+                    <p>Las empresas se comprometen por contrato a respetar tus periodos de exámenes obligatorios.</p>
+                </div>
+                <div class="student-b-card">
+                    <i class="fa-solid fa-wallet"></i>
+                    <h4>Pagos Puntuales</h4>
+                    <p>Monitoreo constante de retribuciones económicas competitivas aseguradas a través del sistema.</p>
+                </div>
+                <div class="student-b-card">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <h4>Liberación de Prácticas</h4>
+                    <p>Convenios listos para validar tus horas trabajadas como servicio social o residencia profesional.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="view-recursos" class="spa-section">
+        <section>
+            <div class="section-header">
+                <h2>Centro de <span>Recursos y Aprendizaje</span></h2>
+                <p>Consejos prácticos, artículos expertos y respuestas inmediatas a tus dudas operativas.</p>
+            </div>
+            <div class="resources-layout">
+                <div class="blog-cards">
+                    <h3 style="margin-bottom:15px; color:var(--dark-blue);">Artículos Destacados</h3>
+                    <div class="blog-card-horizontal">
+                        <div class="blog-img-placeholder"><i class="fa-solid fa-file-invoice"></i></div>
+                        <div class="blog-info">
+                            <span>CV y Portafolio</span>
+                            <h4>Tu primer CV sin experiencia previa</h4>
+                            <p>Destaca proyectos escolares, hackatones y voluntariados clave...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-accordion">
+                    <h3 style="margin-bottom:15px; color:var(--dark-blue);">Preguntas Frecuentes</h3>
+                    
+                    <div class="faq-item" onclick="this.classList.toggle('active')">
+                        <div class="faq-question">¿Tiene algún costo para los alumnos? <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="faq-answer">No, la plataforma y el proceso de vinculación son 100% gratuitos para todos los universitarios activos.</div>
+                    </div>
+
+                    <div class="faq-item" onclick="this.classList.toggle('active')">
+                        <div class="faq-question">¿Cómo se gestionan los pagos mensuales? <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="faq-answer">Las gratificaciones económicas se depositan de manera segura directamente a tu cuenta bancaria registrada durante los primeros 5 días hábiles de cada mes.</div>
+                    </div>
+
+                    <div class="faq-item" onclick="this.classList.toggle('active')">
+                        <div class="faq-question">¿Qué pasa si tengo que darme de baja del proyecto? <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="faq-answer">Puedes solicitar una conclusión anticipada con un aviso previo de 15 días a través de tu panel, asegurando que tu historial de cumplimiento se mantenga intacto en la red.</div>
+                    </div>
+
+                    <div class="faq-item" onclick="this.classList.toggle('active')">
+                        <div class="faq-question">¿Los proyectos pueden renovarse tras el periodo inicial? <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="faq-answer">Sí, si tanto tú como la empresa están de acuerdo con los resultados, el sistema genera de manera automatizada una adenda de extensión de tiempo determinado.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="view-sobre-worku" class="spa-section">
+        <section class="bg-alternate">
+            <div class="section-header">
+                <h2>Nuestra Misión: <span>Impulsar el Mañana</span></h2>
+                <p>Transformamos el panorama del empleo juvenil permitiendo construir experiencia de calidad antes del egreso.</p>
+            </div>
+            
+            <div class="about-grid-layout">
+                <div>
+                    <p class="about-story">Creemos firmemente que el talento no tiene que esperar a un título profesional para generar un impacto real en las organizaciones.</p>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <h4><span>2024</span> Lanzamiento de WorkU</h4>
+                            <p>Validación del modelo inicial en universidades de prestigio con excelentes tasas de retención.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4><span>2026</span> Consolidación Nacional</h4>
+                            <p>Consolidamos una comunidad de más de 12,000 usuarios vinculados con éxito.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-assistant-wrapper">
+                    <div class="ai-assistant-header">
+                        <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+                        <div class="ai-status">
+                            <h4>Asistente WorkU</h4>
+                            <span id="ai-status-text">En línea</span>
+                        </div>
+                    </div>
+                    <div class="ai-chat-body" id="chat-body">
+                        <div class="chat-bubble received">
+                            ¡Hola! 👋 Soy el asistente virtual de WorkU. ¿Qué te gustaría consultar sobre nuestra plataforma? Selecciona una opción aquí abajo.
+                        </div>
+                    </div>
+                    
+                    <div class="typing-bubble" id="typing-bubble">
+                        <div class="typing-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+
+                    <div class="ai-menu-options">
+                        <button class="ai-option-btn" onclick="triggerAIResponse('¿Cómo aseguran que no descuide mis estudios?', 'Estudiante')">🎓 ¿Cómo aseguran que no descuide mis estudios?</button>
+                        <button class="ai-option-btn" onclick="triggerAIResponse('¿Puedo liberar mis Prácticas Profesionales aquí?', 'Estudiante')">💼 ¿Puedo liberar mis Prácticas Profesionales aquí?</button>
+                        <button class="ai-option-btn" onclick="triggerAIResponse('¿Qué costo tiene publicar vacantes para empresas?', 'Empresa')">🏢 ¿Qué costo tiene publicar vacantes para empresas?</button>
+                        <button class="ai-option-btn" onclick="triggerAIResponse('¿Cómo validan que los candidatos sean estudiantes activos?', 'Empresa')">🔍 ¿Cómo validan que los candidatos sean estudiantes activos?</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="modal-overlay" id="vacante-modal">
+        <div class="modal-box">
+            <i class="fa-solid fa-xmark close-modal" onclick="closeVacancyModal()"></i>
+            <div id="modal-content-dynamic"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <img src="Gemini_Generated_Image_h54f9vh54f9vh54f.png" alt="WorkU Logo Tarjeta Footer" class="footer-logo">
+                <p>© 2026 WorkU. Todos los derechos reservados.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Términos y condiciones</a>
+                <a href="#">Política de privacidad</a>
+            </div>
+            <div class="footer-socials">
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const baseVacantes = [
+            // TECNOLOGÍA
+            { id: 1, categoria: 'tech', titulo: 'Desarrollador Frontend Jr (React)', empresa: 'TechCorp Industries', icono: 'fa-code', remuneracion: '$6,500 MXN', tiempo: '20 hrs/semana', esquema: 'Híbrido', tags: ['React', 'CSS3', 'Git'], desc: 'Apoyo en la maquetación de vistas modulares y consumo de APIs REST.', req: ['Estudiante de Sistemas o Afín', 'Conocimientos en JavaScript moderno'], ben: ['Horarios flexibles', 'Mentoría Senior'] },
+            { id: 2, categoria: 'tech', titulo: 'Analista Interno de SQL y Bases de Datos', empresa: 'DataInsights Group', icono: 'fa-database', remuneracion: '$5,800 MXN', tiempo: '15 hrs/semana', esquema: 'Remoto', tags: ['SQL', 'PostgreSQL', 'Excel'], desc: 'Generación de queries de optimización y reportes avanzados de métricas internas.', req: ['Estudiante de Ingeniería', 'SQL intermedio'], ben: ['Trabajo 100% remoto', 'Seguro escolar'] },
+            { id: 3, categoria: 'tech', titulo: 'QA Manual Tester Aprendiz', empresa: 'SoftTesting Lab', icono: 'fa-bug', remuneracion: '$5,000 MXN', tiempo: '20 hrs/semana', esquema: 'Remoto', tags: ['QA', 'Manual', 'Jira'], desc: 'Ejecución de casos de prueba detallados en entornos web y móviles.', req: ['Atención al detalle', 'Cursando carreras de TI'], ben: ['Capacitación en automatización'] },
+            { id: 4, categoria: 'tech', titulo: 'Soporte Técnico de TI Universitario', empresa: 'KPMG Consultores', icono: 'fa-laptop-code', remuneracion: '$5,200 MXN', tiempo: '20 hrs/semana', esquema: 'Presencial', tags: ['Soporte', 'Redes', 'Windows'], desc: 'Asistencia presencial en configuración de terminales operativas y mantenimiento.', req: ['Conocimientos de hardware y redes'], ben: ['Liberación de servicio social'] },
+            { id: 5, categoria: 'tech', titulo: 'Diseñador UI/UX Trainee', empresa: 'Creative Web Studio', icono: 'fa-compass-drafting', remuneracion: '$6,000 MXN', tiempo: '15 hrs/semana', esquema: 'Híbrido', tags: ['Figma', 'Prototipado', 'UI'], desc: 'Colaboración activa en la conceptualización de wireframes de alta fidelidad.', req: ['Portafolio básico en Figma'], ben: ['Acceso a cursos premium'] },
+            { id: 6, categoria: 'tech', titulo: 'Desarrollador Backend Python Intern', empresa: 'Future Fintech', icono: 'fa-terminal', remuneracion: '$7,000 MXN', tiempo: '20 hrs/semana', esquema: 'Remoto', tags: ['Python', 'Django', 'APIs'], desc: 'Desarrollo de scripts automatizados de backend y microservicios.', req: ['Python básico/intermedio'], ben: ['Bono trimestral'] },
+            // MARKETING
+            { id: 7, categoria: 'marketing', titulo: 'Asistente Operativo de Marketing Digital', empresa: 'Digital Solutions SA', icono: 'fa-bullhorn', remuneracion: '$4,500 MXN', tiempo: '15 hrs/semana', esquema: 'Remoto', tags: ['Meta Ads', 'Copy'], desc: 'Planificación de parrillas de contenido para redes sociales.', req: ['Estudiante de Marketing o Comunicación'], ben: ['Capacitación pagada'] },
+            { id: 8, categoria: 'marketing', titulo: 'Creador de Contenido y Editor de Video', empresa: 'Nova Media Agency', icono: 'fa-video', remuneracion: '$5,000 MXN', tiempo: '15 hrs/semana', esquema: 'Híbrido', tags: ['CapCut', 'TikTok'], desc: 'Grabación de tendencias dinámicas corporativas y edición de video vertical.', req: ['Creatividad demostrable', 'Manejo de CapCut'], ben: ['Uso de set profesional'] },
+            { id: 9, categoria: 'marketing', titulo: 'Community Manager Jr', empresa: 'Brands & Co', icono: 'fa-comments', remuneracion: '$4,200 MXN', tiempo: '20 hrs/semana', esquema: 'Remoto', tags: ['Engagement', 'Social'], desc: 'Gestión de comunidades digitales y atención directa a bandejas.', req: ['Excelente ortografía'], ben: ['Certificación interna'] },
+            { id: 10, categoria: 'marketing', titulo: 'Diseñador Gráfico para Redes Sociales', empresa: 'Pixel Factory', icono: 'fa-palette', remuneracion: '$4,800 MXN', tiempo: '15 hrs/semana', esquema: 'Remoto', tags: ['Photoshop', 'Illustrator'], desc: 'Adaptación de piezas gráficas basadas en manuales de identidad.', req: ['Manejo básico de Adobe Suite'], ben: ['Portafolio real'] },
+            { id: 11, categoria: 'marketing', titulo: 'Becario de Investigación de Mercado', empresa: 'Insight Analytics', icono: 'fa-magnifying-glass-chart', remuneracion: '$5,500 MXN', tiempo: '20 hrs/semana', esquema: 'Híbrido', tags: ['Surveys', 'Data'], desc: 'Levantamiento estratégico de encuestas digitales y vaciado analítico.', req: ['Gusto por las estadísticas'], ben: ['Liberación de créditos'] },
+            { id: 12, categoria: 'marketing', titulo: 'Copywriter Creativo Trainee', empresa: 'WordSmiths Agency', icono: 'fa-pen-nib', remuneracion: '$4,600 MXN', tiempo: '15 hrs/semana', esquema: 'Remoto', tags: ['SEO', 'Blogging'], desc: 'Redacción de artículos optimizados bajo parámetros SEO para blogs.', req: ['Excelente redacción'], ben: ['Flexibilidad total'] },
+            // ADMINISTRACIÓN
+            { id: 13, categoria: 'admin', titulo: 'Soporte de Auxiliar Administrativo', empresa: 'Corporativo Valle', icono: 'fa-folder-open', remuneracion: '$5,000 MXN', tiempo: '20 hrs/semana', esquema: 'Presencial', tags: ['Archivo', 'Excel'], desc: 'Control de documentación, captura de pólizas contables e inventarios.', req: ['Uso intermedio de hojas de cálculo'], ben: ['Apoyo de transporte'] },
+            { id: 14, categoria: 'admin', titulo: 'Auxiliar de Contabilidad Escolar', empresa: 'Finanzas Clarificadas', icono: 'fa-calculator', remuneracion: '$5,400 MXN', tiempo: '20 hrs/semana', esquema: 'Híbrido', tags: ['SAT', 'Facturación'], desc: 'Apoyo en conciliación bancaria y validación de facturas ante el SAT.', req: ['Estudiante de Contaduría Pública'], ben: ['Experiencia práctica'] },
+            { id: 15, categoria: 'admin', titulo: 'Practicante de Recursos Humanos', empresa: 'Talent Hunters', icono: 'fa-users-gear', remuneracion: '$4,900 MXN', tiempo: '20 hrs/semana', esquema: 'Híbrido', tags: ['Screening', 'CV'], desc: 'Filtración inicial de currículums y agendamiento de entrevistas.', req: ['Estudiante de Administración o Psicología'], ben: ['Capacitación en atracción'] },
+            { id: 16, categoria: 'admin', titulo: 'Asistente de Servicio al Cliente Jr', empresa: 'Logística Total', icono: 'fa-headset', remuneracion: '$4,800 MXN', tiempo: '15 hrs/semana', esquema: 'Remoto', tags: ['CRM', 'ZenDesk'], desc: 'Atención de solicitudes internas a través de software CRM.', req: ['Alta paciencia y buena comunicación'], ben: ['Trabajo desde casa'] },
+            { id: 17, categoria: 'admin', titulo: 'Gestor de Compras e Inventario Trainee', empresa: 'Proveduría Global', icono: 'fa-boxes-stacked', remuneracion: '$5,300 MXN', tiempo: '20 hrs/semana', esquema: 'Presencial', tags: ['Stock', 'Logística'], desc: 'Monitoreo de niveles mínimos de stock y solicitudes de cotización.', req: ['Habilidad de negociación básica'], ben: ['Prestaciones proporcionales'] },
+            { id: 18, categoria: 'admin', titulo: 'Capturista de Datos y Archivo Digital', empresa: 'DocuSafe', icono: 'fa-keyboard', remuneracion: '$4,500 MXN', tiempo: '15 hrs/semana', esquema: 'Remoto', tags: ['Typing', 'Cloud'], desc: 'Migración masiva de expedientes físicos hacia bases de datos cloud.', req: ['Velocidad de escritura al escribir'], ben: ['Esquema por entregables'] }
+        ];
+
+        const respuestasAI = {
+            '¿Cómo aseguran que no descuide mis estudios?': 'En WorkU, todas las empresas firman un acuerdo obligatorio de Respeto Académico. Esto garantiza por contrato que tus horarios laborales se congelen durante tus semanas de exámenes finales y entregas de proyectos importantes.',
+            '¿Puedo liberar mis Prácticas Profesionales aquí?': '¡Totalmente! Contamos con convenios vinculados con las principales universidades del país. Al concluir tu proyecto con éxito, el sistema emite automáticamente un reporte de competencias avalado para tu escuela.',
+            '¿Qué costo tiene publicar vacantes para empresas?': 'Ofrecemos un modelo flexible. La publicación básica de proyectos iniciales es gratuita para que conozcan el talento. Para reclutamiento masivo o filtros avanzados por promedio, contamos con planes corporativos mensuales.',
+            '¿Cómo validan que los candidatos sean estudiantes activos?': 'Conectamos de forma directa con los módulos escolares de las instituciones aliadas. Cada estudiante debe cargar su constancia vigente de créditos y estatus activo para poder aplicar a cualquier vacante.'
+        };
+
+        function renderVacancies(list) {
+            const container = document.getElementById('container-vacantes');
+            container.innerHTML = '';
+            list.forEach(v => {
+                const card = document.createElement('div');
+                card.className = `vacancy-card-large ${v.categoria}`;
+                card.innerHTML = `
+                    <div class="v-card-top">
+                        <div class="v-card-title"><h3>${v.titulo}</h3><p>${v.empresa}</p></div>
+                        <div class="v-company-logo"><i class="fa-solid ${v.icono}"></i></div>
+                    </div>
+                    <div class="v-card-tags">
+                        <span class="tag ${v.categoria}">${v.categoria.toUpperCase()}</span>
+                        <span class="tag remote">${v.esquema}</span><span class="tag">${v.tiempo}</span>
+                    </div>
+                    <div class="v-card-bottom">
+                        <div class="v-card-meta"><span>Apoyo Mensual</span><strong>${v.remuneracion}</strong></div>
+                        <button class="btn-apply" onclick="openVacancyModal(${v.id})">Postularme</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterVacancies(cat, element) {
+            document.querySelectorAll('.filter-badge').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            if(cat === 'all') renderVacancies(baseVacantes);
+            else renderVacancies(baseVacantes.filter(v => v.categoria === cat));
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.spa-section').forEach(s => s.classList.remove('active-view'));
+            const target = document.getElementById(`view-${viewId}`);
+            if(target) target.classList.add('active-view');
+
+            document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+            const activeLink = document.getElementById(`link-${viewId}`);
+            if(activeLink) activeLink.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        function triggerAIResponse(pregunta, rol) {
+            const chatBody = document.getElementById('chat-body');
+            const typingBubble = document.getElementById('typing-bubble');
+            const statusText = document.getElementById('ai-status-text');
+
+            const userBubble = document.createElement('div');
+            userBubble.className = 'chat-bubble sent';
+            userBubble.innerText = pregunta;
+            chatBody.appendChild(userBubble);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            statusText.innerText = 'Escribiendo...';
+            typingBubble.style.display = 'block';
+            chatBody.appendChild(typingBubble);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            setTimeout(() => {
+                typingBubble.style.display = 'none';
+                statusText.innerText = 'En línea';
+
+                const aiBubble = document.createElement('div');
+                aiBubble.className = 'chat-bubble received';
+                aiBubble.innerText = respuestasAI[pregunta] || 'Disculpa, sigo aprendiendo sobre esa duda.';
+                
+                chatBody.appendChild(aiBubble);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 3000);
+        }
+
+        function openVacancyModal(id) {
+            const job = baseVacantes.find(v => v.id === id);
+            if(!job) return;
+            const contentContainer = document.getElementById('modal-content-dynamic');
+            contentContainer.innerHTML = `
+                <div class="modal-header-info"><h2>${job.titulo}</h2><p><i class="fa-solid fa-building"></i> ${job.empresa}</p></div>
+                <div class="modal-meta-grid">
+                    <div class="meta-entry"><span>Esquema</span><strong>${job.esquema}</strong></div>
+                    <div class="meta-entry"><span>Carga</span><strong>${job.tiempo}</strong></div>
+                    <div class="meta-entry"><span>Apoyo</span><strong>${job.remuneracion}</strong></div>
+                </div>
+                <div class="modal-body">
+                    <h4>Descripción:</h4><p>${job.desc}</p>
+                    <h4>Requisitos:</h4><ul>${job.req.map(r=>`<li>${r}</li>`).join('')}</ul>
+                    <h4>Beneficios:</h4><ul>${job.ben.map(b=>`<li>${b}</li>`).join('')}</ul>
+                </div>
+                <div class="modal-form">
+                    <h3>Formulario de Postulación</h3>
+                    <form onsubmit="event.preventDefault(); alert('¡Postulación enviada!'); closeVacancyModal();">
+                        <div class="form-group"><label>Nombre:</label><input type="text" required></div>
+                        <div class="form-group"><label>Universidad:</label><input type="text" required></div>
+                        <button type="submit" class="btn-submit-app">Enviar mi Perfil</button>
+                    </form>
+                </div>
+            `;
+            document.getElementById('vacante-modal').classList.add('open');
+        }
+
+        function closeVacancyModal() { document.getElementById('vacante-modal').classList.remove('open'); }
+
+        window.addEventListener('DOMContentLoaded', () => { renderVacancies(baseVacantes); });
+    </script>
+</body>
+</html>
